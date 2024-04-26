@@ -6,6 +6,8 @@ import { ADD_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
 
 const SignupForm = () => {
+  const [createUser, {error}] = useMutation(ADD_USER);
+
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
   // set state for form validation
@@ -29,16 +31,30 @@ const SignupForm = () => {
     }
 
     try { 
-      const createUser = useMutation(ADD_USER);
-      const response = await createUser(userFormData);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+    
+      const {data} = await createUser({ 
+          variables: { ...userFormData }
+      });
+        console.log(data); 
+        
+      if (error) {
+        throw new Error(error.message);
       }
 
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
+      if (!data) {
+        throw new Error('No data received from server. Please try again later.');
+      }
+  
+      if (data.errors && data.errors.length > 0) {
+        const errorMessage = data.errors[0].message || 'Unknown error occurred.';
+        throw new Error(errorMessage);
+      }
+    
+      Auth.login(data.addUser.token);
+      // const { token, user } = await data.json();
+      // console.log("user", user);
+      // Auth.login(token);
+
     } catch (err) {
       console.error(err);
       setShowAlert(true);

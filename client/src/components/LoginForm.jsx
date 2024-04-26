@@ -2,12 +2,15 @@
 import { useState } from 'react'; 
 import { useQuery, useMutation } from '@apollo/client';
 import { Form, Button, Alert } from 'react-bootstrap';
+import { ApolloError } from '@apollo/client';
+
 
 
 import { LOGIN_USER } from '../utils/mutations';
 import Auth from '../utils/auth';
 
-const LoginForm = () => {
+const LoginForm = () => { 
+  const [loginUser] = useMutation(LOGIN_USER);
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -28,23 +31,33 @@ const LoginForm = () => {
     }
 
     try { 
-      const loginUser = useMutation(LOGIN_USER);
-      const response = await loginUser(userFormData);
+      
+      console.log("Request Payload:", userFormData);
+ 
+      const { data } = await loginUser ({
+        variables: { ...userFormData }
+      });
+         console.log("Response Data:", data);
+     
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+      Auth.login(data.login.token);
+      // const { token, user } = await data.json();
+      // console.log(user);
+      // Auth.login(token);
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        // ApolloError contains more information about the error
+        console.error("GraphQL Error:", error.message);
+        // You can access additional properties like error.graphQLErrors or error.networkError
+      } else {
+        // Handle other types of errors
+        console.error("Unexpected Error:", error);
       }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
-    } catch (err) {
-      console.error(err);
+      // Show an alert or error message to the user
       setShowAlert(true);
     }
-
     setUserFormData({
-      username: '',
+      // username: '',
       email: '',
       password: '',
     });

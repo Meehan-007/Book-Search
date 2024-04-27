@@ -13,27 +13,38 @@ import { GET_ME } from '../utils/quiers';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
-const SavedBooks = () => { 
+const SavedBooks = () => {  
+  const token = Auth.loggedIn() ? Auth.getToken() : null;
+  console.log("savedbooks checking the token!",token);
   const [deleteIt] = useMutation(REMOVE_BOOK)
-  const { loading, data } = useQuery(GET_ME);
+  const { loading, error, data } = useQuery(GET_ME, {
+    variables: { token },
+  });
 
+console.log("savedbooks checking the error!", error);
+
+if (error) return <p>Error: {error.message}</p>;
+
+console.log("savedbooks checking the data!", data);
   const userData = data?.me || []; 
 
 console.log(userData);
 
   
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
-  const handleDeleteBook = async (bookId) => {
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+  const handleDeleteBook = async (bookId) => { 
+    event.preventDefault
+    // const token = Auth.loggedIn() ? Auth.getToken() : null; 
+    console.log("savedbooks checking the bookId!", bookId);
+ console.log()
     if (!token) {
       return false;
     }
 
     try {
-      
+    console.log("trying to delete", token);
       const data = await deleteIt({
-        variables: { bookId }
+        variables: { bookId, _id: token },
       });
 
      
@@ -58,12 +69,12 @@ console.log(userData);
       </div>
       <Container>
         <h2 className='pt-5'>
-          {userData.length
-            ? `Viewing ${userData.length} saved ${userData.length === 1 ? 'book' : 'books'}:`
+          {data.GetMe.bookCount
+            ? `Viewing ${data.GetMe.bookCount} saved ${data.GetMe.bookCount === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <Row>
-          {userData.map((book) => {
+          {data.GetMe.savedBooks.map((book) => {
             return (
               <Col md="4">
                 <Card key={book.bookId} border='dark'>

@@ -12,13 +12,14 @@ const resolvers = {
     //     return userData;
     //   }
     // } 
-    me: async (parent, { token }) => { 
-      console.log("checking get route", token)
+    GetMe: async (parent, { token }) => { 
+      
       const decodedToken = jwt.decode(token, { complete: true });
     const userId = decodedToken.payload.data._id;
       console.log("checking get route", userId) 
-      const user = await User.findOne(userId);
-
+      // const user = await User.findOne(userId); 
+      const user = await User.findOne({ _id: userId });
+      console.log("book data", user)
     return user;
       
     },
@@ -46,11 +47,10 @@ const resolvers = {
       return { token, user };
     },
     saveBook: async (parent, {_id, bookData}) => { 
-      console.log(_id)
+      console.log("checking save route", bookData)
       const decodedToken = jwt.decode(_id, { complete: true }); 
       const userId = decodedToken.payload.data._id; 
-     console.log(userId)
-      console.log("hello")
+      console.log("checking save route", userId)
       {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: userId },
@@ -61,8 +61,12 @@ const resolvers = {
         return updatedUser;
       }
     },
-    removeBook: async (parent, { bookId, userId }) => {
-      if (userId) {
+    removeBook: async (parent, { bookId, _id }) => {
+      console.log("checking delete route", bookId)  
+      console.log("checking delete route", _id)
+      const decodedToken = jwt.decode(_id, { complete: true }); 
+      const userId = decodedToken.payload.data._id; 
+      console.log("checking delete route", userId)
         const updatedUser = await User.findOneAndUpdate(
           { _id: userId },
           { $pull: { savedBooks: { bookId } } },
@@ -76,7 +80,7 @@ const resolvers = {
   
    
   }
-  }
+  
 
 
 module.exports = resolvers;

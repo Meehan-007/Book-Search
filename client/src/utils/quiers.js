@@ -1,19 +1,19 @@
 import gql from 'graphql-tag';
 
 export const GET_ME = gql`
-   {
-    token 
-    me {
+  query GetMe($token: String!) {
+    GetMe(token: $token) {
       _id
       username
-      email
+      email 
+      bookCount
       savedBooks {
-          bookId
-          description
-          title
-          image
-          authors
-          link
+        bookId 
+        authors
+        description
+        title
+        image
+        link
       }
     }
   }

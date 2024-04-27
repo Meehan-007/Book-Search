@@ -33,12 +33,12 @@ type Book {
 }
 
 type Query {
-  me: User
+  me(_id: String): [User]
   }
 type Mutation {
   login(email: String!, password: String!): Auth
   addUser(username: String!, email: String!, password: String!): Auth
-  saveBook(bookData: BookInput!): User
+  saveBook(_id: String!, bookData: BookInput!): User
   removeBook(bookId: ID!): User
   }
 `;

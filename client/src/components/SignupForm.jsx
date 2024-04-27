@@ -36,6 +36,7 @@ const SignupForm = () => {
           variables: { ...userFormData }
       });
         console.log(data); 
+        console.log("hello");
         
       if (error) {
         throw new Error(error.message);

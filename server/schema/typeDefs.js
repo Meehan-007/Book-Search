@@ -1,7 +1,7 @@
 // import the gql tagged template function
 
 
-// create our typeDefs
+// type defs to define our schema
 const typeDefs = `
 input BookInput {
   authors: [String]

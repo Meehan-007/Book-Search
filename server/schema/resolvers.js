@@ -5,19 +5,13 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    // me: async (parent, { userId }) => {
-    //   console.log("checking get route", userId)
-    //   if (userId) {
-    //     const userData = await User.findOne({ _id: userId }).select('-__v -password');
-    //     return userData;
-    //   }
-    // } 
+  
     GetMe: async (parent, { token }) => { 
       
       const decodedToken = jwt.decode(token, { complete: true });
     const userId = decodedToken.payload.data._id;
       console.log("checking get route", userId) 
-      // const user = await User.findOne(userId); 
+     
       const user = await User.findOne({ _id: userId });
       console.log("book data", user)
     return user;
@@ -26,7 +20,8 @@ const resolvers = {
   },
   
   Mutation: {
-    addUser: async (parent, args) => {
+    addUser: async (parent, args) => { 
+      console.log(args);
       const user = await User.create(args);
       const token = signToken(user);
     

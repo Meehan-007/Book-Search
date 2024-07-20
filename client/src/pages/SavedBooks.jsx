@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap';
 
 import { REMOVE_BOOK } from '../utils/mutations'; 
-import { GET_ME } from '../utils/quiers';
+import { GET_ME } from '../utils/queries';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 

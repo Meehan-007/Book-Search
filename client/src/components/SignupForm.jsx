@@ -22,7 +22,7 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
+    console.log(formState);
     // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -36,7 +36,7 @@ const SignupForm = () => {
           variables: { ...userFormData }
       });
         console.log(data); 
-        console.log("hello");
+       
         
       if (error) {
         throw new Error(error.message);
@@ -50,11 +50,9 @@ const SignupForm = () => {
         const errorMessage = data.errors[0].message || 'Unknown error occurred.';
         throw new Error(errorMessage);
       }
-    
+       console.log(data.addUser.token);
       Auth.login(data.addUser.token);
-      // const { token, user } = await data.json();
-      // console.log("user", user);
-      // Auth.login(token);
+      
 
     } catch (err) {
       console.error(err);
